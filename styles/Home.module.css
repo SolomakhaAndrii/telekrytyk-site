@@ -18,4 +18,4 @@
 .footer { border-top: 1px solid #e8e4dc; padding: 24px; text-align: center; }
 .footer a { font-size: 13px; color: #9e9a91; text-decoration: none; }
 .footer a:hover { color: #1a1a18; }
-.error, .empty { padding: 40px; text-align: center; background: #f0ede8; border-radius: 4px; font-size: 15px; color: #5a5650; line-height: 1.6; }
+.empty { padding: 40px; text-align: center; background: #f0ede8; border-radius: 4px; font-size: 15px; color: #5a5650; }
