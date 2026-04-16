@@ -49,7 +49,7 @@ export default function Home({ posts, tgPosts }) {
                 <div className={styles.cardBody}>
                   <time className={styles.cardDate}>
                     {post.source === "manual"
-                      ? new Date(post.created_at).toLocaleDateString("uk-UA", { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" })
+                      ? new Date(post.created_at).toLocaleDateString("uk-UA", { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit", timeZone: "Europe/Kyiv" })
                       : post.dateStr}
                   </time>
                   <p className={styles.cardText}>{post.text}</p>
