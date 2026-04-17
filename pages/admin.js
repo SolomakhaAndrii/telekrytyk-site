@@ -153,7 +153,7 @@ export default function Admin() {
                 {post.photo_url && <img src={post.photo_url} alt="" className={styles.postThumb} />}
                 <div className={styles.postInfo}>
                   <p className={styles.postText}>{post.text.substring(0, 150)}{post.text.length > 150 ? "..." : ""}</p>
-                  <p className={styles.postDate}>{new Date(post.created_at).toLocaleDateString("uk-UA", { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit", timeZone: "Europe/Kyiv" })}</p>
+                  <p className={styles.postDate}>{new Date(new Date(post.created_at).getTime() + 3 * 60 * 60 * 1000).toLocaleString("uk-UA", { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" })}</p>
                   {post.link && <a href={post.link} target="_blank" rel="noopener noreferrer" className={styles.postLink}>{post.link_label || post.link}</a>}
                 </div>
                 <button onClick={() => handleDelete(post.id)} className={styles.deleteBtn}>✕</button>
