@@ -11,7 +11,8 @@ export default function Home({ posts, tgPosts }) {
   return (
     <>
       <Head>
-        <title>Телекритик — Новини</title>
+        <title>Телекритик — Новини</title> 
+    <meta name="google-site-verification" content="KaPiLAMdtFMCzwsHOF36LmdEgvaR9sLf50Cm_h3muKA" />
         <meta name="description" content="Новини з Telegram каналу Телекритик" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="true" />
