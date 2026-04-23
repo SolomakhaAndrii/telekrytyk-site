@@ -37,6 +37,8 @@ export default function Home({ posts, tgPosts }) {
           <div className={styles.feed}>
             {allPosts.map((post, i) => (
               <article key={i} className={styles.card}>
+  {post.source === "manual" && (
+    <a href={`/post/${post.id}`} className={styles.postTitleLink}>
                 {post.photo_url && (
                   <div className={styles.cardImage}>
                     <img src={post.photo_url} alt="" />
