@@ -56,8 +56,11 @@ export default function Home({ posts, tgPosts }) {
                       : post.dateStr}
                   </time>
                   <p className={styles.cardText}>{post.text.length > 200 ? post.text.substring(0, 200) + "..." : post.text}</p>
-{post.source === "manual" && post.text.length > 200 && (
+{post.text.length > 200 && post.source === "manual" && (
   <a href={`/post/${post.id}`} className={styles.cardLink}>Читати далі →</a>
+)}
+{post.text.length > 200 && post.source === "telegram" && (
+  <a href={`https://t.me/telekritik/${post.id}`} target="_blank" rel="noopener noreferrer" className={styles.cardLink}>Читати в Telegram →</a>
 )}
                   {post.link && (
                     <a href={post.link} target="_blank" rel="noopener noreferrer" className={styles.cardLink}>
