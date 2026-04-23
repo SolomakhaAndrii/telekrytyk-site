@@ -67,7 +67,7 @@ export default function Home({ posts, tgPosts }) {
                     </a>
                   )}
                 </div>
-              </article>
+              </a>)}</article>
             ))}
           </div>
         </main>
