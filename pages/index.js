@@ -55,7 +55,10 @@ export default function Home({ posts, tgPosts }) {
                       ? new Date(post.created_at).toLocaleDateString("uk-UA", { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit", timeZone: "Europe/Kyiv" })
                       : post.dateStr}
                   </time>
-                  <p className={styles.cardText}>{post.text}</p>
+                  <p className={styles.cardText}>{post.text.length > 200 ? post.text.substring(0, 200) + "..." : post.text}</p>
+{post.source === "manual" && post.text.length > 200 && (
+  <a href={`/post/${post.id}`} className={styles.cardLink}>Читати далі →</a>
+)}
                   {post.link && (
                     <a href={post.link} target="_blank" rel="noopener noreferrer" className={styles.cardLink}>
                       {post.link_label || "Читати більше →"}
