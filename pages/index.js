@@ -11,9 +11,9 @@ export default function Home({ posts, tgPosts }) {
   return (
     <>
       <Head>
-        <title>Телекритик — Новини</title> 
-    <meta name="google-site-verification" content="KaPiLAMdtFMCzwsHOF36LmdEgvaR9sLf50Cm_h3muKA" />
+        <title>Телекритик — Новини</title>
         <meta name="description" content="Новини з Telegram каналу Телекритик" />
+        <meta name="google-site-verification" content="KaPiLAMdtFMCzwsHOF36LmdEgvaR9sLf50Cm_h3muKA" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="true" />
         <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Source+Serif+4:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
@@ -37,43 +37,31 @@ export default function Home({ posts, tgPosts }) {
           <div className={styles.feed}>
             {allPosts.map((post, i) => (
               <article key={i} className={styles.card}>
-  {post.source === "manual" && (
-    <a href={`/post/${post.id}`} className={styles.postTitleLink}>
-                {post.photo_url && (
+                {(post.photo_url || post.photo) && (
                   <div className={styles.cardImage}>
-                    <img src={post.photo_url} alt="" />
-                  </div>
-                )}
-                {post.photo && !post.photo_url && (
-                  <div className={styles.cardImage}>
-                    <img src={post.photo} alt="" />
+                    <img src={post.photo_url || post.photo} alt="" />
                   </div>
                 )}
                 <div className={styles.cardBody}>
                   <time className={styles.cardDate}>
                     {post.source === "manual"
-                      ? new Date(post.created_at).toLocaleDateString("uk-UA", { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit", timeZone: "Europe/Kyiv" })
+                      ? new Date(post.created_at + '+00:00').toLocaleString("uk-UA", { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit", timeZone: "Europe/Kyiv" })
                       : post.dateStr}
                   </time>
                   <p className={styles.cardText}>{post.text.length > 200 ? post.text.substring(0, 200) + "..." : post.text}</p>
-{post.text.length > 200 && post.source === "manual" && (
-  <a href={`/post/${post.id}`} className={styles.cardLink}>Читати далі →</a>
-)}
-{post.text.length > 200 && post.source === "telegram" && (
-  <a href={`https://t.me/telekritik/${post.id}`} target="_blank" rel="noopener noreferrer" className={styles.cardLink}>Читати в Telegram →</a>
-)}
+                  {post.text.length > 200 && post.source === "manual" && (
+                    <a href={`/post/${post.id}`} className={styles.cardLink}>Читати далі →</a>
+                  )}
+                  {post.text.length > 200 && post.source === "telegram" && (
+                    <a href={`https://t.me/telekritik/${post.id}`} target="_blank" rel="noopener noreferrer" className={styles.cardLink}>Читати в Telegram →</a>
+                  )}
                   {post.link && (
                     <a href={post.link} target="_blank" rel="noopener noreferrer" className={styles.cardLink}>
                       {post.link_label || "Читати більше →"}
                     </a>
                   )}
-                  {post.source === "telegram" && (
-                    <a href={`https://t.me/telekritik/${post.id}`} target="_blank" rel="noopener noreferrer" className={styles.cardLink}>
-                      Читати в Telegram →
-                    </a>
-                  )}
                 </div>
-              </a>)}</article>
+              </article>
             ))}
           </div>
         </main>
@@ -87,33 +75,24 @@ export default function Home({ posts, tgPosts }) {
 }
 
 export async function getServerSideProps() {
-  // Manual posts from Supabase
   let posts = [];
   try {
     const { data } = await supabase.from("posts").select("*").order("created_at", { ascending: false }).limit(50);
     posts = data || [];
   } catch {}
 
-  // Telegram posts
   let tgPosts = [];
-  const TOKEN = process.env.BOT_TOKEN;
-  if (TOKEN) {
-    try {
-      const res = await fetch(`https://api.telegram.org/bot${TOKEN}/getUpdates?limit=100&offset=-100`);
-      const data = await res.json();
-      if (data.ok) {
-// Telegram posts from Supabase
-let tgPosts = [];
-try {
-  const { data } = await supabase.from("tg_posts").select("*").order("created_at", { ascending: false }).limit(50);
-  tgPosts = (data || []).map(p => ({
-    id: p.telegram_id,
-    text: p.text,
-    photo: p.photo_url,
-    dateStr: new Date(p.created_at).toLocaleString("uk-UA", { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit", timeZone: "Europe/Kyiv" }),
-    date: new Date(p.created_at).getTime() / 1000,
-    source: "telegram",
-  }));
-} catch {}
+  try {
+    const { data } = await supabase.from("tg_posts").select("*").order("created_at", { ascending: false }).limit(50);
+    tgPosts = (data || []).map(p => ({
+      id: p.telegram_id,
+      text: p.text,
+      photo: p.photo_url,
+      dateStr: new Date(p.created_at).toLocaleString("uk-UA", { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit", timeZone: "Europe/Kyiv" }),
+      date: new Date(p.created_at).getTime() / 1000,
+      source: "telegram",
+    }));
+  } catch {}
+
   return { props: { posts, tgPosts } };
 }
