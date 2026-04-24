@@ -102,29 +102,18 @@ export async function getServerSideProps() {
       const res = await fetch(`https://api.telegram.org/bot${TOKEN}/getUpdates?limit=100&offset=-100`);
       const data = await res.json();
       if (data.ok) {
-        tgPosts = await Promise.all(
-          (data.result || [])
-            .filter(u => u.channel_post && (u.channel_post.text || u.channel_post.caption))
-            .map(async u => {
-              const msg = u.channel_post;
-              const dateStr = new Date(msg.date * 1000).toLocaleDateString("uk-UA", {
-                day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit",
-              });
-              let photo = null;
-              if (msg.photo?.length > 0) {
-                try {
-                  const f = await fetch(`https://api.telegram.org/bot${TOKEN}/getFile?file_id=${msg.photo[msg.photo.length-1].file_id}`);
-                  const fd = await f.json();
-                  if (fd.ok) photo = `https://api.telegram.org/file/bot${TOKEN}/${fd.result.file_path}`;
-                } catch {}
-              }
-              return { id: msg.message_id, text: msg.text || msg.caption || "", dateStr, date: msg.date, photo };
-            })
-        );
-        tgPosts.reverse();
-      }
-    } catch {}
-  }
-
+// Telegram posts from Supabase
+let tgPosts = [];
+try {
+  const { data } = await supabase.from("tg_posts").select("*").order("created_at", { ascending: false }).limit(50);
+  tgPosts = (data || []).map(p => ({
+    id: p.telegram_id,
+    text: p.text,
+    photo: p.photo_url,
+    dateStr: new Date(p.created_at).toLocaleString("uk-UA", { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit", timeZone: "Europe/Kyiv" }),
+    date: new Date(p.created_at).getTime() / 1000,
+    source: "telegram",
+  }));
+} catch {}
   return { props: { posts, tgPosts } };
 }
