@@ -99,7 +99,7 @@ export async function getServerSideProps() {
   const TOKEN = process.env.BOT_TOKEN;
   if (TOKEN) {
     try {
-      const res = await fetch(`https://api.telegram.org/bot${TOKEN}/getUpdates?limit=50`);
+      const res = await fetch(`https://api.telegram.org/bot${TOKEN}/getUpdates?limit=100&offset=-100`);
       const data = await res.json();
       if (data.ok) {
         tgPosts = await Promise.all(
